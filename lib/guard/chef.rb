@@ -1,6 +1,5 @@
 require 'guard'
 require 'guard/guard'
-require 'active_support/inflector'
 
 Dir[File.expand_path('../chef/*_job.rb',  __FILE__)].each {|f| require f}
 
@@ -72,6 +71,18 @@ module Guard
         puts "#{type.classify} is not a valid watch type"
         nil
       end
+    end
+    
+    # File activesupport/lib/active_support/inflector/methods.rb, line 209
+    def constantize(camel_cased_word)
+      names = camel_cased_word.split('::')
+      names.shift if names.empty? || names.first.empty?
+
+      constant = Object
+      names.each do |name|
+        constant = constant.const_defined?(name) ? constant.const_get(name) : constant.const_missing(name)
+      end
+      constant
     end
   end
 end
